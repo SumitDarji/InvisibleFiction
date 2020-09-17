@@ -1,0 +1,130 @@
+﻿@model Ornaments.Models.BranchModel
+@{
+    ViewBag.Title = ViewBag.Header;
+}
+
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0 text-dark">Branch</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a onclick="Javascript:ShowProgressBar();" href="@Url.Action("Index", "Home")">Home</a></li>
+                    <li class="breadcrumb-item"><a onclick="Javascript:ShowProgressBar();" href="@Url.Action("Index", "Branch")">Branch</a></li>
+                    <li class="breadcrumb-item active">@ViewBag.Header Branch</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-primary card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title">@ViewBag.Header Branch Details</h3>
+                    </div>
+
+                    <!-- /.card-header -->
+                    @using (Html.BeginForm("Edit", "Branch", FormMethod.Post, new { @class = "form-horizontal", @id = "EditBranchForm" }))
+                    {
+                        @Html.HiddenFor(model => model.CompanyID)
+                        @Html.HiddenFor(model => model.BranchID)
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="branchname">Name</label>
+                                @Html.TextBoxFor(model => model.Name, new { @id = "branchname", @placeholder = "Enter Name", @class = "form-control", @maxlength = "30" })
+                                @Html.ValidationMessageFor(model => model.Name)
+                            </div>
+                            <div class="form-group">
+                                <label for="branchAddress">Address</label>
+                                @Html.TextAreaFor(model => model.Address, new { @id = "branchAddress", @row = 3, @col = 6, @placeholder = "Enter Address", @class = "form-control", @maxlength = "30" })
+                                @Html.ValidationMessageFor(model => model.Address)
+                            </div>
+                            <div class="form-group">
+                                <label for="branchEmail">Email address</label>
+                                @Html.TextBoxFor(model => model.Email, new { @id = "branchEmail", @placeholder = "Enter email", @class = "form-control", @maxlength = "30" })
+                                @Html.ValidationMessageFor(model => model.Email)
+                            </div>
+                            <div class="form-group">
+                                <label for="branchMobile">Mobile</label>
+                                @Html.TextBoxFor(model => model.Mobile, new { @id = "branchMobile", @placeholder = "Enter Mobile no", @class = "form-control", @maxlength = "30" })
+                                @Html.ValidationMessageFor(model => model.Mobile)
+                            </div>
+                            <div class="form-group">
+                                <label for="branchLocation">Location</label>
+                                @Html.TextBoxFor(model => model.Location, new { @id = "branchLocation", @placeholder = "Enter Location", @class = "form-control", @maxlength = "30" })
+                                @Html.ValidationMessageFor(model => model.Location)
+                            </div>
+                            @if (Session["LoginTypeCode"] != null && Convert.ToInt32(Session["LoginTypeCode"]) != Convert.ToInt32(Ornaments.BusinessObjects.Enum.LoginTypeCode.BRNACH_USER))
+                            {
+                                <div class="form-group">
+                                    <label for="branchEmail">Company</label>
+                                    @Html.DropDownListFor(model => model.CompanyID, new SelectList(Ornaments.BusinessObject.CFCode.GetComapnyList(Convert.ToInt32(Session["UserID"])), "CompanyID", "Name"), "-- Please select --",
+                                                new { @id = "CompanyID", @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.CompanyID)
+                                </div>
+                            }
+                            <div class="form-group">
+                                <label for="branchUserName">User Name</label>
+                                @Html.TextBoxFor(model => model.Username, new { @readonly = "readonly", @id = "branchUserName", @placeholder = "Enter User Name", @class = "form-control", @maxlength = "30" })
+                                @Html.ValidationMessageFor(model => model.Username)
+                            </div>
+                            <div class="form-group">
+                                <label for="branchPassword">Password</label>
+                                @Html.TextBoxFor(model => model.Password, new { @placeholder = "Enter Password", @class = "form-control", @maxlength = "16", @type = "password" })
+                                @Html.ValidationMessageFor(model => model.Password)
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                        <div class="card-footer">
+                            <div class="row" style="float:right;">
+                                <div class="col-md-6 push-left">
+                                    <button onclick="Javascript:jsFormValidate('EditBranchForm');" type="submit" class="btn btn-primary">Update</button>
+                                </div>
+                                <div class="col-md-6 push-right">
+                                    @Html.ActionLink("Cancel", "Index", "Branch", new { @class = "btn btn-block btn-default", onclick = "Javascript:ShowProgressBar();" })
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            jsMakeMenuActive("liBranch");
+            // CREATE BRANCH SUCCESSFULLY
+        if ('@ViewBag.Message' != "") {
+            if ('@ViewBag.IsSuccess' == 1) {
+                swal({
+                    title: 'Information Saved.',
+                    text: '@ViewBag.Message',
+                    type: 'success',
+                    confirmButtonText: 'Ok'
+                }).then(function () {
+                    ShowProgressBar();
+                     window.location.href = '@Url.Action("Index", "Branch")';
+                });
+            }
+            else {
+                swal(
+                    'Error',
+                    '@ViewBag.Message',
+                    'error'
+                );
+            }
+        }
+                    });
+    </script>
+}

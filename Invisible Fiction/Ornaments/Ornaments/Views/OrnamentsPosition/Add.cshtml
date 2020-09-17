@@ -1,0 +1,162 @@
+﻿@using Ornaments.BusinessObject
+@model Ornaments.Models.OrnamentsPositionModel
+@{
+    ViewBag.Title = "Add";
+}
+
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0 text-dark">Ornaments Position</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a onclick="Javascript:ShowProgressBar();" href="@Url.Action("Index", "Home")">Home</a></li>
+                    <li class="breadcrumb-item"><a onclick="Javascript:ShowProgressBar();" href="@Url.Action("Index", "OrnamentsPosition")">Ornaments Position</a></li>
+                    <li class="breadcrumb-item active">Add Ornaments Position</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-primary card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title">Add Ornaments Position Details</h3>
+                    </div>
+
+                    <!-- /.card-header -->
+                    @using (Html.BeginForm("Add", "OrnamentsPosition", FormMethod.Post, new { @class = "form-horizontal", @id = "AddOrnamentsPositionForm", enctype = "multipart/form-data" }))
+                    {
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="Name">Name</label>
+                        @Html.TextBoxFor(model => model.Name, new { @id = "Name", @placeholder = "Enter Name", @class = "form-control", @maxlength = "30" })
+                        @Html.ValidationMessageFor(model => model.Name)
+                    </div>
+                    <div class="form-group">
+                        <label for="Description">Description</label>
+                        @Html.TextAreaFor(model => model.Description, new { @id = "Description", @row = 3, @col = 6, @placeholder = "Enter Description", @class = "form-control", @maxlength = "30" })
+                        @Html.ValidationMessageFor(model => model.Description)
+                    </div>
+                    <div class="form-group">
+                        <label for="branchEmail">Category</label>
+                        @Html.DropDownListFor(model => model.CategoryID, new SelectList(CFCode.getCodeByCodeType(5), "CodeID", "Description"), "-- Please select --",
+                                new { @id = "CategoryID", @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CategoryID)
+                    </div>
+                    <div class="form-group">
+                        <div class="row m-0" style="float:right; width:100%;">
+                            <div class="col-md-6 p-0 push-left">
+                                <label for="exampleInputFile">Icon</label>
+                                <div class="input-group">
+                                    <div class="custom-file">
+                                        @Html.TextBoxFor(model => model.ImgFile, new { type = "file", @id = "InputFileImg", name = "ImgFile" })
+                                        <label class="custom-file-label" for="InputFileImg">Choose file</label>
+                                    </div>
+                                </div>
+                                <span id="spnImgValidation" class="field-validation-error" style="display:none;"></span>
+                            </div>
+                            <div class="col-md-6 pl-4 push-right">
+                                <img id="imgPreview" width="100" height="100" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                        <!-- /.card-body -->
+                        <div class="card-footer">
+                            <div class="row" style="float:right;">
+                                <div class="col-md-6 push-left">
+                                    <button onclick="Javascript:jsFormValidate('AddOrnamentsPositionForm');" type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                                <div class="col-md-6 push-right">
+                                    @Html.ActionLink("Cancel", "Index", "OrnamentsPosition", new { @class = "btn btn-block btn-default", onclick = "Javascript:ShowProgressBar();" })
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            jsMakeMenuActive("liOrnamentsPosition");
+             // CREATE OrnamentsPosition SUCCESSFULLY
+        if ('@ViewBag.Message' != "") {
+            if ('@ViewBag.IsSuccess' == 1) {
+                swal({
+                    title: 'Information Saved.',
+                    text: '@ViewBag.Message',
+                    type: 'success',
+                    confirmButtonText: 'Ok'
+                }).then(function () {
+                    ShowProgressBar();
+                     window.location.href = '@Url.Action("Index", "OrnamentsPosition")';
+                });
+            }
+            else {
+                swal(
+                    'Error',
+                    '@ViewBag.Message',
+                    'error'
+                );
+            }
+        }
+             function readURL(input,index) {
+                if (input.files && input.files[0]) {
+                  var reader = new FileReader();
+                  reader.onload = function (e) {
+                       $('#imgPreview').attr('src', e.target.result);  // You can show image preview before submit
+                  }
+                  reader.readAsDataURL(input.files[0]);
+                }
+            }
+             $("#InputFileImg").change(function (e) {
+                var _URL = window.URL || window.webkitURL;
+      // Check file is image or not
+      var file, img;
+      if ((file = this.files[0])) {
+
+        var fileName = this.files[0]['name'];
+        var idxDot = fileName.lastIndexOf(".") + 1;
+        var extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+        if (extFile=="jpg" || extFile=="jpeg" || extFile=="png"){
+
+          readURL(this,1); 
+          img = new Image();
+          img.onload = function () {
+
+              if (this.width != 128 || this.height != 128) {
+                  // alert('Please upload proper image with exact size : 100 x 110');
+                  $("#spnImgValidation").text("Please upload proper image with exact size : 128 x 128");
+                  $("#spnImgValidation").show();
+              } else {
+                  $("#spnImgValidation").text("");
+                  $("#spnImgValidation").hide();
+              } 
+
+          };
+          img.src = _URL.createObjectURL(file);
+
+        } else {
+            $("#spnImgValidation").text("Only jpg/jpeg and png files are allowed!");
+            $("#spnImgValidation").show();
+          // alert('Only jpg/jpeg and png files are allowed!');
+         }
+       }
+    });
+        });
+    </script>
+}

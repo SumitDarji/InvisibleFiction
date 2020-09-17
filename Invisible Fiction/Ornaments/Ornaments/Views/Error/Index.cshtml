@@ -1,0 +1,55 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin | Forgot</title>
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/Content/Theme/plugins/fontawesome-free/css/all.min.css">
+    <!-- icheck bootstrap -->
+    <link rel="stylesheet" href="~/Content/Theme/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/Content/Theme/css/adminlte.min.css">
+    <link rel="stylesheet" href="~/Content/Theme/custom-style.css" />
+</head>
+<body>
+    @Html.Partial("~/Views/Partial_ProgressBar.cshtml")<!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper m-0">
+        <!-- Main content -->
+        <section class="content">
+            <div class="error-page m-0" style="width:100%">
+                <h2 class="headline text-warning"> Error</h2>
+                <div class="error-content p-5">
+                    <h3><i class="fas fa-exclamation-triangle text-warning"></i> Oops! Something Went Wrong...</h3>
+                    <p>
+                        @ViewBag.Message
+                        <a onclick="Javascript:ShowProgressBar();" href="@Url.Action("Index", "Home")">return to dashboard</a>
+                    </p>
+                    @if (ViewBag.InnerException != null && !string.IsNullOrEmpty(ViewBag.InnerException))
+                    {
+                    <h3><i class="fas fa-exclamation-triangle text-warning"></i> Other Information</h3>
+                    <p>
+                        @ViewBag.InnerException
+                    </p>
+                    }
+                </div>
+                <!-- /.error-content -->
+            </div>
+            <!-- /.error-page -->
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+    @Scripts.Render("~/bundles/General")
+
+</body>
+</html>

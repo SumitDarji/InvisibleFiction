@@ -1,0 +1,7 @@
+F:\Sumit\Project\Invisible Fiction\Ornaments\Ornaments.DataAccess\bin\Debug\Ornaments.DataAccess.dll
+F:\Sumit\Project\Invisible Fiction\Ornaments\Ornaments.DataAccess\bin\Debug\Ornaments.DataAccess.pdb
+F:\Sumit\Project\Invisible Fiction\Ornaments\Ornaments.DataAccess\obj\Debug\Ornaments.DataAccess.csprojAssemblyReference.cache
+F:\Sumit\Project\Invisible Fiction\Ornaments\Ornaments.DataAccess\obj\Debug\Ornaments.DataAccess.dll
+F:\Sumit\Project\Invisible Fiction\Ornaments\Ornaments.DataAccess\obj\Debug\Ornaments.DataAccess.pdb
+F:\Sumit\Project\Invisible Fiction\Ornaments\Ornaments.DataAccess\bin\Debug\System.Data.SqlClient.dll
+F:\Sumit\Project\Invisible Fiction\Ornaments\Ornaments.DataAccess\obj\Debug\Ornaments.DataAccess.csproj.CopyComplete

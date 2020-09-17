@@ -1,0 +1,45 @@
+﻿@model List<Ornaments.BusinessObject.CBranch>
+<table id="tblBranchDetail" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Email</th>
+            <th>Mobile</th>
+            <th>Status</th>
+            <th>LastLogged</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>@item.BranchID</td>
+            <td>@item.Name</td>
+            <td>@item.Address</td>
+            <td>@item.Email</td>
+            <td> @item.Mobile</td>
+            <td>@item.Status</td>
+            <td>@item.LastLogged</td>
+            @if (Session["LoginTypeCode"] != null && Convert.ToInt32(Session["LoginTypeCode"]) != Convert.ToInt32(Ornaments.BusinessObjects.Enum.LoginTypeCode.BRNACH_USER))
+            {
+        <td>
+            <a onclick="Javascript:ShowProgressBar();" href="@Url.Action("Edit", "Branch", new { id = item.BranchID })" class="btn btn-info"><i class="fas fa-edit"></i></a>
+            @*<a onclick="Javascript:ShowProgressBar();" href="@Url.Action("Delete", "Branch", new { id = item.BranchID })" class="btn btn-danger"><i class="fas fa-trash"></i></a>*@
+            <a onclick="Javascript:DeleteItem(@item.BranchID);"  class="btn btn-danger"><i class="fas fa-trash"></i></a>
+        </td>
+            }
+            else
+            {
+                <td>
+                    <a onclick="Javascript:ShowProgressBar();" href="@Url.Action("View", "Branch", new { id = item.BranchID })" class="btn btn-info"><i class="fas fa-eye"></i></a>
+                </td>
+            }
+            
+        </tr>
+        }
+    </tbody>
+</table>

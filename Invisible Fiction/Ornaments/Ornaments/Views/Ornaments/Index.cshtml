@@ -1,0 +1,147 @@
+﻿@using Ornaments.BusinessObject
+@model Ornaments.BusinessObject.COrnaments
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0 text-dark">Ornaments </h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a onclick="Javascript:ShowProgressBar();" href="@Url.Action("Index", "Home")">Home</a></li>
+                    <li class="breadcrumb-item active">Ornaments </li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-primary card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title">Ornaments  List</h3>
+                        <div class="card-tools">
+                            @Html.ActionLink("Add New", "Add", "Ornaments", new { @class = "btn btn-block btn-outline-primary", onclick = "Javascript:ShowProgressBar();" })
+                        </div>
+                    </div>
+
+                    <!-- /.card-header -->
+                    <div class="card-body" id="container">
+                        <table id="tblOrnaments" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Material Category</th>
+                                    <th>Ornament Position</th>
+                                    <th>Weight</th>
+                                    <th>Cost</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (ViewBag.OrnamentsList != null)
+                                {
+                                    foreach (var item in ViewBag.OrnamentsList)
+                                    {
+                                        <tr>
+                                            <td>@item.OrnamentID</td>
+                                            <td>@item.Name</td>
+                                            <td>@item.Description</td>
+                                            <td>@item.CategoryName</td>
+                                            <td>@item.OrnamentPositionName</td>
+                                            <td>@item.Weight</td>
+                                            <td>@item.Cost</td>
+                                            <td>
+                                                <a onclick="Javascript:ShowProgressBar();" href="@Url.Action("Edit", "Ornaments", new { id = item.OrnamentID })" class="btn btn-info"><i class="fas fa-edit"></i></a>
+                                                <a onclick="Javascript:DeleteItem(@item.OrnamentID);" class="btn btn-info"><i class="fas fa-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- /.content -->
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            jsMakeMenuActive("liOrnaments");
+              $('#tblOrnaments').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+              });
+        });
+
+        function DeleteItem(itemId) {
+                if (itemId > 0) {
+                    swal({
+                        title: "Are you sure?",
+                        text: "Once deleted, you will not be able to recover this Ornaments details!",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    }).then((willDelete) => {
+                        if (willDelete) {
+                            ShowProgressBar();
+                            $.ajax({
+                                type: "GET",
+                                url: '@Url.Action("Delete", "Ornaments")',
+                                data: { id: itemId },
+                                contentType: 'application/json; charset-utf-8',
+                                success: function (data) {
+                                    HideProgressBar();
+                                    if (data && data["Success"]) {
+                                        swal({
+                                            text: "Ornaments deleted Successfully",
+                                            icon: "success",
+                                        }).then((willDelete) => {
+                                             window.location.href = '@Url.Action("Index", "Ornaments")';
+                                        });
+                                    } else {
+                                         swal(
+                                            'Error',
+                                            data["Exception"],
+                                            'error'
+                                        );
+                                    }
+                                },
+                                error: function (e) {
+                                    // alert(e.responseText);
+                                    HideProgressBar();
+                                     swal(
+                                        'Error',
+                                        e,
+                                        'error'
+                                    );
+                                    return false;
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+    </script>
+}

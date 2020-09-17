@@ -1,0 +1,169 @@
+﻿@using Ornaments.BusinessObject
+@model Ornaments.BusinessObject.CBranch
+@{
+    ViewBag.Title = "Index";
+}
+
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0 text-dark">Branch</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a onclick="Javascript:ShowProgressBar();" href="@Url.Action("Index", "Home")">Home</a></li>
+                    <li class="breadcrumb-item active">Branch</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-primary card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title">Branch Details List</h3>
+                        <div class="card-tools" style="width:40%;">
+                            @*<button type="button" class="btn btn-block btn-outline-primary" data-toggle="modal" data-target="#btnAddNewModel">
+                       Add New
+                </button>*@
+                            <div class="row">
+                                <div class="col-8">
+                                    @if (Session["LoginTypeCode"] != null && (Convert.ToInt32(Session["LoginTypeCode"]) == Convert.ToInt32(Ornaments.BusinessObjects.Enum.LoginTypeCode.ADMIN_USER)))
+                                    {
+                                        @Html.DropDownListFor(model => model.CompanyID, new SelectList(CFCode.GetComapnyList(Convert.ToInt32(Session["UserID"])), "CompanyID", "Name"), "-- Please select --",
+                                                         new { @id = "CompanyID", @class = "form-control" })
+                                    }
+                                </div>
+                                <div class="col-4">
+                                    @if (Session["LoginTypeCode"] != null && Convert.ToInt32(Session["LoginTypeCode"]) != Convert.ToInt32(Ornaments.BusinessObjects.Enum.LoginTypeCode.BRNACH_USER))
+                                    {
+                                        @Html.ActionLink("Add New", "Add", "Branch", new { @class = "btn btn-block btn-outline-primary", onclick = "Javascript:ShowProgressBar();" })
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (Session["LoginTypeCode"] != null && (Convert.ToInt32(Session["LoginTypeCode"]) == Convert.ToInt32(Ornaments.BusinessObjects.Enum.LoginTypeCode.COMPANY_USER) ||
+                                        Convert.ToInt32(Session["LoginTypeCode"]) == Convert.ToInt32(Ornaments.BusinessObjects.Enum.LoginTypeCode.BRNACH_USER)))
+                    { 
+                        <!-- /.card-header -->
+                    <div class="card-body" id="divContainer">
+                        @Html.Partial("Partial_BranchDetailList", (List<CBranch>)ViewBag.BranchList)
+                    </div>
+                    }
+                    else
+                    {
+                    <div class="card-body" id="divContainer">
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+<!-- DataTables -->
+@*<script src="~/Content/Theme/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/Content/Theme/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/Content/Theme/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/Content/Theme/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>*@
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+             jsMakeMenuActive("liBranch");
+            $("#CompanyID").change(function () {
+
+                var selectedCompanyID = $(this).children("option:selected").val();
+                // alert("You have selected the country - " + selectedCountry);
+                if (selectedCompanyID > 0) {
+                    ShowProgressBar();
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("Partial_BranchDetailList", "Branch")',
+                        data: { companyID: selectedCompanyID },
+                        contentType: 'application/json; charset-utf-8',
+                        success: function (data) {
+                            ////debugger
+                            //alert(data[0]);
+                            $('#divContainer').html(data);
+                            HideProgressBar();
+
+             $('#tblBranchDetail').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+                        },
+                        error: function (e) {
+                            // alert(e.responseText);
+                            HideProgressBar();
+                            return false;
+                        }
+                    });
+                }
+            });
+             
+        });
+
+        function DeleteItem(itemId) {
+                if (itemId > 0) {
+                    swal({
+                        title: "Are you sure?",
+                        text: "Once deleted, you will not be able to recover this branch detail!",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    }).then((willDelete) => {
+                        if (willDelete) {
+                            ShowProgressBar();
+                            $.ajax({
+                                type: "GET",
+                                url: '@Url.Action("Delete", "Branch")',
+                                data: { id: itemId },
+                                contentType: 'application/json; charset-utf-8',
+                                success: function (data) {
+                                    HideProgressBar();
+                                    if (data && data["Success"]) {
+                                        swal({
+                                            text: "Branch deleted Successfully",
+                                            icon: "success",
+                                        }).then((willDelete) => {
+                                             window.location.href = '@Url.Action("Index", "Branch")';
+                                        });
+                                    } else {
+                                         swal(
+                                            'Error',
+                                            data["Exception"],
+                                            'error'
+                                        );
+                                    }
+                                },
+                                error: function (e) {
+                                    // alert(e.responseText);
+                                    HideProgressBar();
+                                     swal(
+                                        'Error',
+                                        e,
+                                        'error'
+                                    );
+                                    return false;
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+    </script>
+}
